@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dasarathg68/GoLangAuthJWT/database"
 	helper "github.com/dasarathg68/GoLangAuthJWT/helpers"
+	"github.com/dasarathg68/GoLangAuthJWT/middleware"
 	"github.com/dasarathg68/GoLangAuthJWT/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -47,7 +48,7 @@ func Signup() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		var user models.User
-
+		middleware.CORSAuth(c)
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -108,7 +109,7 @@ func Login() gin.HandlerFunc {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		var user models.User
 		var foundUser models.User
-
+		middleware.CORSAuth(c)
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return

@@ -8,19 +8,22 @@ import (
 	"strings"
 )
 
+func CORSAuth(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", c.Request.Header.Get("Origin"))
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+	c.Writer.Header().Set("Cache-Control", "public, max-age=604800, immutable")
+	c.Writer.Header().Set("HTTP/1.1", "200 OK")
+	if c.Request.Method == "OPTIONS" {
+		c.AbortWithStatus(200)
+	}
+}
 func Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		fmt.Println("Middleware entered")
-
-		c.Writer.Header().Set("Access-Control-Allow-Origin", c.Request.Header.Get("Origin"))
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-		c.Writer.Header().Set("Cache-Control", "public, max-age=604800, immutable")
-		c.Writer.Header().Set("HTTP/1.1", "200 OK")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(200)
-		}
+		//c.Request.Header.Get("Origin")
+		CORSAuth(c)
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{

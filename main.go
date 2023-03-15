@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/dasarathg68/GoLangAuthJWT/middleware"
 	routes "github.com/dasarathg68/GoLangAuthJWT/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -22,12 +23,13 @@ func main() {
 
 	router := gin.New()
 	router.Use(gin.Logger())
-
-	routes.AuthRoutes(router)
-	routes.UserRoutes(router)
 	router.GET("/", func(c *gin.Context) {
+		middleware.CORSAuth(c)
 		c.JSON(200, gin.H{"message": "200 OK"})
 	})
+	routes.AuthRoutes(router)
+	routes.UserRoutes(router)
+
 	router.GET("/api-1", func(c *gin.Context) {
 		c.JSON(200, gin.H{"success": "Access granted for api-1"})
 	})
